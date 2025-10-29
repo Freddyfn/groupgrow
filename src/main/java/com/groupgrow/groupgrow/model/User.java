@@ -36,6 +36,10 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    // --- CAMPO AÑADIDO ---
+    @Column(name = "twofa_enabled")
+    private boolean twofaEnabled = false;
+
     // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -57,4 +61,8 @@ public class User {
     public void setKycStatus(String kycStatus) { this.kycStatus = kycStatus; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    // --- GETTER Y SETTER AÑADIDOS ---
+    public boolean isTwofaEnabled() { return twofaEnabled; }
+    public void setTwofaEnabled(boolean twofaEnabled) { this.twofaEnabled = twofaEnabled; }
 }
