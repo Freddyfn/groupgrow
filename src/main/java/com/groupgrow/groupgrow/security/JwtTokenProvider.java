@@ -53,6 +53,17 @@ public class JwtTokenProvider {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public Long getUserIdFromJWT(String token) {
+        Claims claims = getClaimFromToken(token, Function.identity());
+        Object userIdObj = claims.get("userId");
+        if (userIdObj instanceof Integer) {
+            return ((Integer) userIdObj).longValue();
+        } else if (userIdObj instanceof Long) {
+            return (Long) userIdObj;
+        }
+        return null;
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
