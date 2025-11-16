@@ -23,22 +23,26 @@ public class FrontendController {
     @GetMapping(value = {
         "/",
         "/my-groups",
+        "/groups",
         "/create-group",
         "/login",
         "/register",
         "/dashboard",
-        "/profile"
+        "/profile",
+        "/resources",
+        "/activate-2fa"
     }, produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> serveFrontend() {
         return getIndexHtml();
     }
 
     /**
-     * Captura rutas dinámicas como /edit-group/{id} y /group/{id}
+     * Captura rutas dinámicas como /edit-group/{id}, /group/{id}, y /make-payment/{id}
      */
     @GetMapping(value = {
         "/edit-group/**",
-        "/group/**"
+        "/group/**",
+        "/make-payment/**"
     }, produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> serveFrontendDynamic() {
         return getIndexHtml();

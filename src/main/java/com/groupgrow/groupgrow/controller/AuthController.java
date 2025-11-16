@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping({"/api/v1/auth", "/api/auth"})
 // --- EL NOMBRE DE LA CLASE DEBE SER AuthController ---
 public class AuthController {
 

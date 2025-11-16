@@ -24,6 +24,7 @@ public class GroupResponse {
     private Long creatorId;
     private String creatorName;
     private LocalDateTime createdAt;
+    private Boolean isMember; // Indica si el usuario actual es miembro del grupo
 
     // Getters and Setters
     public Long getId() {
@@ -176,6 +177,14 @@ public class GroupResponse {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Boolean getIsMember() {
+        return isMember;
+    }
+
+    public void setIsMember(Boolean isMember) {
+        this.isMember = isMember;
     }
 }
 

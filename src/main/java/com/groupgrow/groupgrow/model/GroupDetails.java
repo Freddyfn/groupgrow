@@ -4,7 +4,40 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
+@SqlResultSetMapping(
+    name = "MemberStatusMapping",
+    classes = @ConstructorResult(
+        targetClass = com.groupgrow.groupgrow.dto.MemberStatusDto.class,
+        columns = {
+            @ColumnResult(name = "userId", type = Long.class),
+            @ColumnResult(name = "nombreMiembro", type = String.class),
+            @ColumnResult(name = "totalAportadoEnGrupo", type = Double.class),
+            @ColumnResult(name = "fechaUltimoAporte", type = Date.class),
+            @ColumnResult(name = "frecuenciaDeAporte", type = String.class)
+        }
+    )
+)
+@NamedNativeQuery(
+    name = "GroupDetails.getMemberStatusForGroup",
+    query = "SELECT " +
+            "u.id AS userId, " +
+            "CONCAT(u.first_name, ' ', u.last_name) AS nombreMiembro, " +
+            "COALESCE(SUM(t.amount), 0) AS totalAportadoEnGrupo, " +
+            "MAX(t.created_at) AS fechaUltimoAporte, " +
+            "gd.contribution_frequency AS frecuenciaDeAporte " +
+            "FROM group_members gm " +
+            "JOIN users u ON gm.user_id = u.id " +
+            "JOIN group_details gd ON gm.group_id = gd.id " +
+            "LEFT JOIN transactions t ON gm.user_id = t.user_id " +
+            "AND gm.group_id = t.group_id " +
+            "AND t.type = 'contribution' " +
+            "AND t.status = 'completed' " +
+            "WHERE gm.group_id = :groupId " +
+            "GROUP BY u.id, u.first_name, u.last_name, gd.contribution_frequency, gd.id",
+    resultSetMapping = "MemberStatusMapping"
+)
 @Entity
 @Table(name = "group_details")
 public class GroupDetails {

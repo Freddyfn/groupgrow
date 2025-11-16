@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/groups")
+@RequestMapping({"/api/v1/groups", "/api/groups"})
 public class GroupController {
 
     @Autowired
@@ -64,10 +64,13 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getGroupById(@PathVariable Long id) {
+    public ResponseEntity<?> getGroupById(@PathVariable Long id, HttpServletRequest request) {
         try {
-            GroupResponse group = groupService.getGroupById(id);
-            return ResponseEntity.ok(group);
+            Long userId = getUserIdFromRequest(request);
+            
+            // Devolvemos el dashboard completo del grupo con toda la información del usuario
+            var dashboard = groupService.getGroupDashboardForUser(id, userId);
+            return ResponseEntity.ok(dashboard);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
@@ -98,6 +101,37 @@ public class GroupController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el grupo");
+        }
+    }
+    
+    @GetMapping("/public")
+    public ResponseEntity<?> getPublicGroups(HttpServletRequest request) {
+        try {
+            // Intentar obtener el userId si existe
+            Long userId = null;
+            try {
+                userId = getUserIdFromRequest(request);
+            } catch (Exception e) {
+                // Si no hay token, continuar sin userId
+            }
+            
+            List<GroupResponse> publicGroups = groupService.getPublicGroupsForUser(userId);
+            return ResponseEntity.ok(publicGroups);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener los grupos públicos");
+        }
+    }
+    
+    @PostMapping("/{id}/join")
+    public ResponseEntity<?> joinGroup(@PathVariable Long id, HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromRequest(request);
+            groupService.joinGroup(id, userId);
+            return ResponseEntity.ok().body("Te has unido al grupo exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al unirse al grupo");
         }
     }
 }

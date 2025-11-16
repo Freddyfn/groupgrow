@@ -1,0 +1,21 @@
+package com.groupgrow.groupgrow.dto;
+
+public class PortfolioItem {
+    private String name;
+    private double value;
+    private String color;
+
+    public PortfolioItem(String name, double value, String color) {
+        this.name = name;
+        this.value = value;
+        this.color = color;
+    }
+
+    // Getters y Setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public double getValue() { return value; }
+    public void setValue(double value) { this.value = value; }
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
+}
