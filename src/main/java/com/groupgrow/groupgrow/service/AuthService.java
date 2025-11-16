@@ -1,6 +1,7 @@
 package com.groupgrow.groupgrow.service;
 
 import com.groupgrow.groupgrow.dto.LoginResponse; // Asegúrate que este import esté bien
+import com.groupgrow.groupgrow.exception.EmailAlreadyExistsException;
 import com.groupgrow.groupgrow.model.User;
 import com.groupgrow.groupgrow.repository.UserRepository;
 import com.groupgrow.groupgrow.security.JwtTokenProvider; // Asegúrate que este import esté bien
@@ -20,6 +21,12 @@ public class AuthService {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public User register(User user) {
+        // Verificar si el email ya existe
+        User existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser != null) {
+            throw new EmailAlreadyExistsException("Este correo electrónico ya está registrado. Por favor, utiliza otro correo o inicia sesión.");
+        }
+        
         user.setPasswordHash(encoder.encode(user.getPasswordHash()));
         user.setKycStatus("pending");
         user.setTwofaEnabled(false);
